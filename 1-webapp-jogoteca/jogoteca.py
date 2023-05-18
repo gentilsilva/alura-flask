@@ -1,6 +1,7 @@
-from flask import Flask, render_template, request
+import flask
 
-app = Flask(__name__)
+
+app = flask.Flask(__name__)
 
 
 class Jogo:
@@ -18,22 +19,22 @@ lista: [str] = [jogo1, jogo2, jogo3]
 
 @app.route('/')
 def index():
-    return render_template('lista.html', titulo='Jogos', jogos=lista)
+    return flask.render_template('lista.html', titulo='Jogos', jogos=lista)
 
 
 @app.route('/formulario')
 def formulario():
-    return render_template('novo.html', titulo='Novo Jogo')
+    return flask.render_template('novo.html', titulo='Novo Jogo')
 
 
 @app.route('/cadastrar', methods=['POST', ])
 def cadastrar():
-    nome: str = request.form['nome']
-    categoria: str = request.form['categoria']
-    console: str = request.form['console']
+    nome: str = flask.request.form['nome']
+    categoria: str = flask.request.form['categoria']
+    console: str = flask.request.form['console']
     jogo: Jogo = Jogo(nome, categoria, console)
     lista.append(jogo)
-    return render_template('lista.html', titulo='Jogos', jogos=lista)
+    return flask.redirect('/')
 
 
 app.run(debug=True)
