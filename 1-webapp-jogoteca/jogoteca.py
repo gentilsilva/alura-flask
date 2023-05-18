@@ -1,7 +1,8 @@
-import flask
+from flask import Flask, render_template, request, redirect, session, flash
 
 
-app = flask.Flask(__name__)
+app = Flask(__name__)
+app.secret_key = 'alura'
 
 
 class Jogo:
@@ -19,22 +20,45 @@ lista: [str] = [jogo1, jogo2, jogo3]
 
 @app.route('/')
 def index():
-    return flask.render_template('lista.html', titulo='Jogos', jogos=lista)
+    return render_template('lista.html', titulo='Jogos', jogos=lista)
 
 
-@app.route('/formulario')
+@app.route('/novo')
 def formulario():
-    return flask.render_template('novo.html', titulo='Novo Jogo')
+    return render_template('novo.html', titulo='Novo Jogo')
 
 
 @app.route('/cadastrar', methods=['POST', ])
 def cadastrar():
-    nome: str = flask.request.form['nome']
-    categoria: str = flask.request.form['categoria']
-    console: str = flask.request.form['console']
+    nome: str = request.form['nome']
+    categoria: str = request.form['categoria']
+    console: str = request.form['console']
     jogo: Jogo = Jogo(nome, categoria, console)
     lista.append(jogo)
-    return flask.redirect('/')
+    return redirect('/')
+
+
+@app.route('/login')
+def login():
+    return render_template('login.html')
+
+
+@app.route('/autenticar', methods=['POST', ])
+def autenticar():
+    if 'alohomora' == request.form['senha']:
+        session['usuario_logado'] = request.form['usuario']
+        flash(session['usuario_logado'] + ' logado com sucesso!')
+        return redirect('/')
+    else:
+        flash('Usuário não logado')
+        return redirect('/login')
+
+
+@app.route('/logout')
+def logout():
+    session['usuario_logado'] = None
+    flash('Logout efetuado com sucesso!')
+    return redirect('/')
 
 
 app.run(debug=True)
