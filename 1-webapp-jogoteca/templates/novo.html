@@ -1,6 +1,6 @@
 {% extends "template.html" %}
 {% block conteudo %}
-      <form action="/cadastrar" method="POST">
+      <form action="{{ url_for('cadastrar') }}" method="POST">
         <fieldset>
           <div class="form-group">
             <label for="nome">Nome</label>
